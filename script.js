@@ -33,6 +33,18 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const reveals = document.querySelectorAll('.reveal');
 
+  // Spotlight-border: track the pointer inside each card and expose it as CSS vars.
+  if (!reducedMotion && window.matchMedia('(hover: hover)').matches) {
+    const spotlights = document.querySelectorAll('.spotlight');
+    spotlights.forEach((card) => {
+      card.addEventListener('pointermove', (event) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+        card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+      });
+    });
+  }
+
   if (reducedMotion || !('IntersectionObserver' in window)) {
     reveals.forEach((element) => element.classList.add('visible'));
     return;
